@@ -1,0 +1,6 @@
+#.env
+.idea
+.git
+/docker/postgresql
+/docker/mysql
+/docker/dev/nginx/logs/*

@@ -1,0 +1,55 @@
+services:
+
+    nginx:
+      build:
+        context: docker
+        dockerfile: dev/nginx/Dockerfile
+      volumes:
+        - ./app:/app
+        - ./docker/dev/nginx/logs:/var/log/nginx
+      ports:
+        - "80:80"
+      depends_on:
+        - fpm
+
+    fpm:
+      build:
+        context: docker
+        dockerfile: dev/php-fpm/Dockerfile
+      volumes:
+        - ./app:/app
+      environment:
+        APP_DEBUG: ${APP_DEBUG}
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+    cli:
+      build:
+        context: docker
+        dockerfile: dev/php-cli/Dockerfile
+      volumes:
+        - ./app:/app
+      environment:
+        APP_DEBUG: ${APP_DEBUG}
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+    mysql:
+      image: mysql:latest
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      volumes:
+        - ./docker/mysql:/var/lib/mysql
+        - ./app:/app
+      ports:
+        - "3306:3306"
+      working_dir: /app
+
+
