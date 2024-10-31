@@ -4,12 +4,17 @@ namespace App\Error;
 
 use App\Exception\HttpException;
 use GuzzleHttp\Psr7\Response;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 class Error
 {
-    public function __construct(private LoggerInterface $logger)
+    private LoggerInterface $logger;
+
+
+    public function __construct(ContainerInterface $container)
     {
+        $this->logger = $container->get(LoggerInterface::class);
     }
 
     public function handle(\Throwable $exception, Response $response): Response

@@ -62,7 +62,7 @@ switch ($routeInfo[0]) {
         try {
             $response = $callableInvoker->call($callable, $routeParams);
         } catch (Throwable $exception) {
-            $response = (new Error($container->get(LoggerInterface::class)))->handle($exception, $container->get(Response::class));
+            $response = (new Error($container))->handle($exception, $response);
         }
 }
 
