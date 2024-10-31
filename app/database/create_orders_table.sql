@@ -12,4 +12,4 @@ create table if not exists orders(
     created datetime DEFAULT CURRENT_TIMESTAMP() NOT NULL
 );
 
-create index idx_orders_barcode ON orders(barcode)
+create index idx_orders_barcode ON orders(barcode);
