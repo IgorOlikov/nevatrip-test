@@ -1,7 +1,7 @@
 build: docker-build
 up: docker-up
 install: composer-install
-tables: create-table
+table: create-table
 
 
 docker-build:
