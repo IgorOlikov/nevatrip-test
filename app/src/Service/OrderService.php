@@ -47,8 +47,6 @@ class OrderService
         /**
          * transaction
          */
-
-
         try {
             $this->pdo->beginTransaction();
 
@@ -216,7 +214,7 @@ class OrderService
     public function approveOrderApiMockRequest(string $barcode): Response
     {
         $mock = new MockHandler([
-            //new Response(200, ['Content-Type' => 'application/json'], json_encode(['message' => 'order successfully approved'])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['message' => 'order successfully approved'])),
             new Response(404, ['Content-Type' => 'application/json'], json_encode(['error' => 'event cancelled'])),
             new Response(404, ['Content-Type' => 'application/json'], json_encode(['error' => 'no tickets'])),
             new Response(404, ['Content-Type' => 'application/json'], json_encode(['error' => 'no seats'])),
