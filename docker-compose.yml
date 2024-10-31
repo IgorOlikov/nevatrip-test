@@ -47,9 +47,11 @@ services:
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       volumes:
         - ./docker/mysql:/var/lib/mysql
-        - ./app:/app
+        - ./app/database/create_orders_table.sql:/docker-entrypoint-initdb.d/dump.sql
       ports:
         - "3306:3306"
-      working_dir: /app
+      working_dir: /docker-entrypoint-initdb.d
+
+
 
 

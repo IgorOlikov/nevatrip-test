@@ -67,6 +67,8 @@ class OrderService
                 $ticketAdultQuantity,
                 $ticketKidPrice,
                 $ticketKidQuantity,
+                $barcode,
+                1,
                 $equalPrice
             );
 
@@ -91,10 +93,9 @@ class OrderService
      * @param int $ticketKidPrice
      * @param int $ticketKidQuantity
      * @param int|null $retries
-     * @return int
+     * @return string
      * @throws GuzzleException
      * @throws RandomException
-     * @throws HttpException
      */
     public function bookOrder(
         int $eventId,
@@ -104,10 +105,10 @@ class OrderService
         int $ticketKidPrice,
         int $ticketKidQuantity,
         ?int $retries = 10
-    ): int
+    ): string
     {
         if ($retries <= 0) {
-            throw new HttpException(['error' => 'max api calls attempts'], 400);
+            throw new HttpException(['error' => 'Max api calls attempts'], 400);
         }
 
         $barcode = $this->generateUniqueBarcode();
@@ -128,11 +129,10 @@ class OrderService
 
         $responseContent = json_decode($response->getBody()->getContents(), true);
 
-
-        if ($responseContent['error'] === 'barcode already exists') {
+        if (isset($responseContent['error']) && $responseContent['error'] === 'barcode already exists') {
             $this->bookOrder($eventId, $eventDate, $ticketAdultPrice, $ticketAdultQuantity, $ticketKidPrice, $ticketKidQuantity, $retries - 1);
         }
-        elseif ($responseContent['message'] == 'order successfully booked') {
+        elseif (isset($responseContent['message']) && $responseContent['message'] == 'order successfully booked') {
             return $barcode;
         }
 
@@ -140,17 +140,16 @@ class OrderService
     }
 
     /**
-     * @param int $barcode
+     * @param string $barcode
      * @throws GuzzleException
-     * @throws HttpException
      */
-    public function approveBooking(int $barcode): void
+    public function approveBooking(string $barcode): void
     {
         $response = $this->approveOrderApiMockRequest($barcode);
 
         $responseContent = json_decode($response->getBody()->getContents(), true);
 
-        if ($responseContent['error']) {
+        if (isset($responseContent['error'])) {
             throw new HttpException($responseContent, $response->getStatusCode());
         }
     }
@@ -162,7 +161,7 @@ class OrderService
      * @param int $ticketAdultQuantity
      * @param int $ticketKidPrice
      * @param int $ticketKidQuantity
-     * @param int $barcode
+     * @param string $barcode
      * @return Response
      * @throws GuzzleException
      */
@@ -173,7 +172,7 @@ class OrderService
         int $ticketAdultQuantity,
         int $ticketKidPrice,
         int $ticketKidQuantity,
-        int $barcode
+        string $barcode
     ): Response
     {
         $mock = new MockHandler([
@@ -206,11 +205,11 @@ class OrderService
     }
 
     /**
-     * @param int $barcode
+     * @param string $barcode
      * @return Response
      * @throws GuzzleException
      */
-    public function approveOrderApiMockRequest(int $barcode): Response
+    public function approveOrderApiMockRequest(string $barcode): Response
     {
         $mock = new MockHandler([
             new Response(200, ['Content-Type' => 'application/json'], json_encode(['message' => 'order successfully approved'])),
@@ -252,12 +251,11 @@ class OrderService
     }
 
     /**
-     * @throws RandomException
-     * @return int
+     * @return string
      */
-    public function generateUniqueBarcode(): int
+    public function generateUniqueBarcode(): string
     {
-        return random_int(120,120);
+        return substr(bin2hex(openssl_random_pseudo_bytes(60)), 0, 120);
     }
 
 

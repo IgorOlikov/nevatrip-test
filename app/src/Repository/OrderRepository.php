@@ -15,11 +15,13 @@ readonly class OrderRepository
         int $ticketAdultQuantity,
         int $ticketKidPrice,
         int $ticketKidQuantity,
+        string $barcode,
+        int $userId,
         int $equalPrice
     ): array
     {
-        $sql = 'insert into orders (event_id, event_date, ticket_adult_price, ticket_adult_quantity, ticket_kid_price, ticket_kid_quantity, barcode, equal_price, created)' .
-                'values (:event_id, :event_date, :ticket_adult_price, :ticket_adult_quantity, :ticket_kid_price, :ticket_kid_quantity, :barcode, :equal_price, NOW())';
+        $sql = 'insert into orders (event_id, event_date, ticket_adult_price, ticket_adult_quantity, ticket_kid_price, ticket_kid_quantity, barcode, user_id, equal_price)' .
+                'values (:event_id, :event_date, :ticket_adult_price, :ticket_adult_quantity, :ticket_kid_price, :ticket_kid_quantity, :barcode, :user_id, :equal_price)';
 
         $statement = $this->pdo->prepare($sql);
 
@@ -29,6 +31,8 @@ readonly class OrderRepository
         $statement->bindValue(':ticket_adult_quantity', $ticketAdultQuantity, \PDO::PARAM_INT);
         $statement->bindValue(':ticket_kid_price', $ticketKidPrice, \PDO::PARAM_INT);
         $statement->bindValue(':ticket_kid_quantity', $ticketKidQuantity, \PDO::PARAM_INT);
+        $statement->bindValue(':barcode', $barcode);
+        $statement->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $statement->bindValue(':equal_price', $equalPrice, \PDO::PARAM_INT);
 
         $statement->execute();
@@ -46,13 +50,13 @@ readonly class OrderRepository
         return $statement->fetchAll();
     }
 
-    public function orderExistByBarcode(int $barcode): bool
+    public function orderExistByBarcode(string $barcode): bool
     {
         $sql = 'select * from orders o where o.barcode = :barcode limit 1';
 
         $statement = $this->pdo->prepare($sql);
 
-        $statement->bindValue(':barcode', $barcode, \PDO::PARAM_INT);
+        $statement->bindValue(':barcode', $barcode);
 
         $statement->execute();
 

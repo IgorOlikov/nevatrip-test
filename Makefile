@@ -13,7 +13,7 @@ composer-install:
 	docker compose run --rm cli composer install
 
 create-tables:
-	docker compose exec -i postgresql psql -d app -U app -f create-tables.sql
+	cat app/database/create_orders_table.sql | docker compose exec -T mysql mysql -u app -p"password" -D app
 
 seed-client-merchandise:
 	docker compose run --rm cli php database-fake-seeder.php
