@@ -31,6 +31,7 @@ class OrderController
                 new Assert\Length(min: 1, max: 11)
             ],
             'event_date' => [
+                new Assert\NotBlank(),
                 new Assert\Type('string'),
                 new Assert\DateTime('Y-m-d H:i:s'),
                 new Assert\Length(max: 19)
