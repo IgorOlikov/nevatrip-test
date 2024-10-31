@@ -1,6 +1,8 @@
 <?php
 
 
+use App\UserMock\Auth;
+use App\UserMock\AuthInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -32,7 +34,9 @@ return [
     },
     ValidatorInterface::class => function (): ValidatorInterface {
         return Validation::createValidator();
-    }
+    },
+    AuthInterface::class => static fn() => new Auth(),
+
 
 
 ];

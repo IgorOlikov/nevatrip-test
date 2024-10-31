@@ -29,10 +29,10 @@ class OrderService
      * @param int $ticketAdultQuantity
      * @param int $ticketKidPrice
      * @param int $ticketKidQuantity
+     * @param int $userId
      * @return array
      * @throws GuzzleException
      * @throws RandomException
-     * @throws HttpException
      */
     public function addOrder(
         int $eventId,
@@ -40,13 +40,14 @@ class OrderService
         int $ticketAdultPrice,
         int $ticketAdultQuantity,
         int $ticketKidPrice,
-        int $ticketKidQuantity
+        int $ticketKidQuantity,
+        int $userId
     ): array
     {
-        /** transaction */
-
+        /**
+         * transaction
+         */
         try {
-
             $this->pdo->beginTransaction();
 
             $barcode = $this->bookOrder(
@@ -60,16 +61,17 @@ class OrderService
 
             $equalPrice = $this->calcEqualPrice($ticketAdultPrice, $ticketAdultQuantity, $ticketKidPrice, $ticketKidQuantity);
 
-            $order = $this->orderRepository->createOrder(
-                $eventId,
-                $eventDate,
-                $ticketAdultPrice,
-                $ticketAdultQuantity,
-                $ticketKidPrice,
-                $ticketKidQuantity,
-                $barcode,
-                1,
-                $equalPrice
+            $order = $this->orderRepository
+                ->createOrder(
+                    $eventId,
+                    $eventDate,
+                    $ticketAdultPrice,
+                    $ticketAdultQuantity,
+                    $ticketKidPrice,
+                    $ticketKidQuantity,
+                    $barcode,
+                    $userId,
+                    $equalPrice
             );
 
             $this->pdo->commit();

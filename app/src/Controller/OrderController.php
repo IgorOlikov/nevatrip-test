@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\OrderService;
+use App\UserMock\AuthInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -12,7 +13,8 @@ class OrderController
 {
     public function __construct(
         private OrderService $orderService,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private AuthInterface $auth
     )
     {
     }
@@ -79,7 +81,8 @@ class OrderController
             $decodedContent['ticket_adult_price'],
             $decodedContent['ticket_adult_quantity'],
             $decodedContent['ticket_kid_price'],
-            $decodedContent['ticket_kid_quantity']
+            $decodedContent['ticket_kid_quantity'],
+            $this->auth->getUserId()
         );
 
         $response = $response->withStatus(201);
