@@ -1,4 +1,10 @@
-Запрос
+Инструкция пл установке.
+
+Одной строкой из корневой папки проекта.
+```bash
+make build && make up && make install && make table
+```
+Проверить работоспособность можно curl запросом.
 
 ```bash
 curl -X POST http://127.0.0.1:80/order \
@@ -13,3 +19,8 @@ curl -X POST http://127.0.0.1:80/order \
   "ticket_kid_quantity": 0
 }'
 ```
+Схема базы данных для задачи № 2
+
+Максимально нормализированная схема, что может иметь негативный эффект из - за сложных запросов с джойнами.
+
+![](https://github.com/IgorOlikov/nevatrip-test/blob/main/Task-2/task2-schema.png)
