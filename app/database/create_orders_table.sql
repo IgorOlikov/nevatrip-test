@@ -11,3 +11,5 @@ create table if not exists orders(
     equal_price int(11) UNSIGNED NOT NULL CHECK (equal_price >=1),
     created datetime DEFAULT CURRENT_TIMESTAMP() NOT NULL
 );
+
+create index idx_orders_barcode ON orders(barcode)
